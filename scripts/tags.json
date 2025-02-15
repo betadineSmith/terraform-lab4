@@ -1,0 +1,22 @@
+[
+    {
+        "Key": "Environment",
+        "Value": "Test"
+    },
+	{
+        "Key": "CreatedBy",
+        "Value": "Terraform"
+    },
+    {
+        "Key": "Owner",
+        "Value": "JMBeteta"
+    },
+    {
+        "Key": "Company",
+        "Value": "HACK-A-BOSS"
+    },
+    {
+        "Key": "LabName",
+        "Value": "Lab4"
+    }
+]

@@ -14,6 +14,16 @@ Antes de empezar, se han creado manualmente los siguientes recursos en AWS:
 2. Tabla DynamoDB: lab4-terraform-state  
    - Se usa para bloquear el estado y evitar modificaciones concurrentes.  
 
+## Scripts de Creación Manual
+
+Antes de iniciar Terraform, es necesario crear el **Bucket S3** y la **tabla DynamoDB** para almacenar el estado.  
+Se ha añadido un script en `scripts/create_s3_dynamodb.sh` que automatiza este proceso.
+
+### Para ejecutarlo:
+
+bash scripts/create_s3_dynamodb.sh
+
+
 ## Configuración de Terraform
 
 Los archivos base son:
