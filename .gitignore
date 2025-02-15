@@ -1,0 +1,5 @@
+# Ignorar la carpeta donde Terraform guarda plugins y archivos temporales
+.terraform/
+
+# Ignorar el archivo de bloqueo de versión del proveedor
+.terraform.lock.hcl
