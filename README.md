@@ -48,3 +48,22 @@ Estos archivos son generados automáticamente por Terraform y no deben subirse a
 - Tablas de rutas segmentadas, con cada subnet pública teniendo su propia tabla de rutas asociada al IGW y cada subnet privada asociada a un NAT Gateway específico.
 - Etiquetas unificadas para todos los recursos, cargadas dinámicamente desde el archivo tags.json.
 
+## Implementación de la Seguridad (Security Groups)
+
+Se ha desarrollado un módulo en Terraform para gestionar los **Security Groups (SG)** de los distintos componentes de la infraestructura.
+
+Cada **Security Group** ha sido creado inicialmente **sin reglas**, y las reglas de tráfico serán añadidas posteriormente según los requisitos de cada servicio.
+
+###  **Security Groups creados:**
+- **SG para RDS PostgreSQL** → `lab4-rds-sg`
+- **SG para ElasticCache Redis** → `lab4-redis-sg`
+- **SG para los Microservicios en ECS** → `lab4-ecs-sg`
+- **SG para el Application Load Balancer (ALB - Externo)** → `lab4-alb-sg`
+- **SG para el Network Load Balancer (NLB - Interno)** → `lab4-nlb-sg`
+- **SG para EFS (Elastic File System)** → `lab4-efs-sg`
+
+###  **Consideraciones:**
+- Todos los SGs han sido creados dentro de la **VPC principal** y con los **tags unificados** de `tags.json`.  
+- Se han definido **outputs** en Terraform para poder referenciar cada SG en otros módulos.
+- Las **reglas de seguridad** se definirán en una fase posterior según los requisitos de conectividad de cada servicio.
+

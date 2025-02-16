@@ -12,3 +12,10 @@ module "network" {
   availability_zones = var.availability_zones
   tags               = local.tags
 }
+
+module "security" {
+  source = "./modules/security"
+
+  vpc_id = module.network.vpc_id  
+  tags   = local.tags             
+}

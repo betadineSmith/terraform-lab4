@@ -1,24 +1,17 @@
-output "vpc_cidr" {
-  description = "CIDR de la VPC"
-  value       = module.network.vpc_cidr
+# ID de la VPC
+output "vpc_id" {
+  description = "ID de la VPC"
+  value       = module.network.vpc_id
 }
 
-output "public_subnets" {
-  description = "Lista de CIDRs de Subnets Públicas"
-  value       = module.network.public_subnets
+# Subnets Públicas (IDs)
+output "public_subnet_ids" {
+  description = "Lista de IDs de Subnets Públicas"
+  value       = module.network.public_subnet_ids
 }
 
-output "private_subnets" {
-  description = "Lista de CIDRs de Subnets Privadas"
-  value       = module.network.private_subnets
-}
-
-output "availability_zones" {
-  description = "Lista de Availability Zones"
-  value       = module.network.availability_zones
-}
-
-output "network_tags" {
-  description = "Tags usados en la red"
-  value       = module.network.tags
+# Subnets Privadas (IDs)
+output "private_subnet_ids" {
+  description = "Lista de IDs de Subnets Privadas"
+  value       = module.network.private_subnet_ids
 }
