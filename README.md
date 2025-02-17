@@ -138,3 +138,21 @@ Si deseas probar el montaje manualmente desde una instancia EC2:
 sudo yum install -y amazon-efs-utils
 sudo mkdir -p /mnt/efs
 sudo mount -t efs <efs_dns_name>:/ /mnt/efs
+```
+
+### Configuración de Route 53 (Zona Privada y Registros)
+
+Se ha creado un módulo en Terraform para gestionar una **Zona Privada en Route 53** dentro de la VPC. Esto permite la resolución interna de nombres de dominio para los distintos servicios desplegados en la infraestructura.
+
+#### Recursos creados:
+- **Zona Privada en Route 53** con el dominio `lab4.internal.`
+- **Registros CNAME internos** para resolver más fácilmente los endpoints de los servicios:
+  - `rds.lab4.internal` → **Base de datos RDS PostgreSQL**
+  - `redis.lab4.internal` → **Redis Primary (lectura/escritura)**
+  - `redis-ro.lab4.internal` → **Redis Replica (solo lectura)**
+  - `efs.lab4.internal` → **Elastic File System (EFS)**
+
+#### Beneficios:
+- Simplifica la conectividad de los servicios internos, permitiendo que ECS y otros componentes puedan acceder por nombres de dominio en lugar de direcciones IP.
+- Facilita la administración de recursos sin depender de direcciones dinámicas.
+- Se pueden añadir más registros en el futuro si se despliegan nuevos servicios.

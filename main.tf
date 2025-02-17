@@ -133,3 +133,20 @@ module "efs" {
 
   tags = local.tags
 }
+
+# ==================================================================
+# MÓDULO PARA CREAR Rourte53 - zona privada
+# ==================================================================
+
+module "route53" {
+  source = "./modules/route53"
+
+  private_zone_name      = "lab4.local" # Dominio interno
+  vpc_id                 = module.network.vpc_id
+  rds_endpoint           = module.rds.rds_endpoint
+  redis_primary_endpoint = module.redis.redis_primary_endpoint
+  redis_reader_endpoint  = module.redis.redis_reader_endpoint
+  efs_dns_name           = module.efs.efs_dns_name
+
+  tags = local.tags
+}

@@ -98,17 +98,18 @@ output "rds_secret_arn" {
 # - Devuelve el ARN del grupo de replicación.
 # ==================================================================
 
-# Endpoint de conexión a Redis (Primary Endpoint)
-output "redis_endpoint" {
-  description = "Primary Endpoint del cluster Redis"
-  value       = module.redis.redis_endpoint
+# Endpoint de conexión a Redis (Primary - Read/Write)
+output "redis_primary_endpoint" {
+  description = "Primary Endpoint del cluster Redis (Read/Write)"
+  value       = module.redis.redis_primary_endpoint
 }
 
-# ARN del grupo de replicación Redis
-output "redis_arn" {
-  description = "ARN del grupo de replicación Redis"
-  value       = module.redis.redis_arn
+# Endpoint de conexión a Redis (Reader - Solo Lectura)
+output "redis_reader_endpoint" {
+  description = "Reader Endpoint del cluster Redis (Read Only)"
+  value       = module.redis.redis_reader_endpoint
 }
+
 
 # ==================================================================
 # OUTPUTS DEL MÓDULO EFS (Elastic File System)
@@ -124,3 +125,41 @@ output "efs_dns_name" {
   value       = module.efs.efs_dns_name
 }
 
+# ==================================================================
+# OUTPUTS DEL MÓDULO ROUTE 53 (ZONA PRIVADA Y REGISTROS DNS)
+# ==================================================================
+# - Devuelve el ID de la zona privada creada en Route 53.
+# - Devuelve los nombres DNS simplificados para:
+#     - RDS PostgreSQL (sin puerto)
+#     - ElasticCache Redis (Primary y Read Replica)
+#     - Elastic File System (EFS)
+# ==================================================================
+
+# ID de la zona privada en Route 53
+output "route53_zone_id" {
+  description = "ID de la zona privada en Route 53"
+  value       = module.route53.route53_zone_id
+}
+
+# Nombre DNS simplificado para RDS PostgreSQL
+output "rds_dns" {
+  description = "Nombre DNS simplificado para RDS PostgreSQL"
+  value       = module.route53.rds_dns
+}
+
+# Nombre DNS simplificado para ElasticCache Redis (Primary)
+output "redis_primary_dns" {
+  description = "Nombre DNS simplificado para ElasticCache Redis (Primary)"
+  value       = module.route53.redis_primary_dns
+}
+
+# Nombre DNS simplificado para ElasticCache Redis (Read Replica)
+output "redis_reader_dns" {
+  description = "Nombre DNS simplificado para ElasticCache Redis (Read Replica)"
+  value       = module.route53.redis_reader_dns
+}
+
+output "efs_dns" {
+  description = "Nombre DNS simplificado para Elastic File System (EFS)"
+  value       = module.route53.efs_dns
+}
