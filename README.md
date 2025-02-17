@@ -113,3 +113,28 @@ Se ha añadido un módulo en Terraform para gestionar **ElastiCache Redis** con 
 
 - **Tags unificados**
   - Se aplican las mismas etiquetas (`tags.json`) a todos los recursos de Redis.
+
+## Implementación de Elastic File System (EFS)
+
+Se ha añadido soporte para **AWS Elastic File System (EFS)** dentro de la infraestructura, proporcionando almacenamiento compartido y escalable para los microservicios.  
+
+### **Configuración del Módulo de EFS**
+El módulo de Terraform configura un **EFS** con las siguientes características:
+
+- **Accesible desde las Subnets Privadas** dentro de la VPC.
+- **Asociado a un Security Group** para controlar el tráfico de red.
+- **Gestión Automática de Capacidad**, sin necesidad de definir un tamaño fijo.
+- **Integración con ECS Fargate y otros servicios** que necesiten almacenamiento persistente.
+
+### **Outputs Generados**
+Después de la implementación, Terraform proporciona la siguiente información clave:
+
+- **DNS de Montaje** → Punto de acceso para conectar EFS con otras instancias o contenedores.
+
+###  **Ejemplo de Montaje Manual en EC2**
+Si deseas probar el montaje manualmente desde una instancia EC2:
+
+```sh
+sudo yum install -y amazon-efs-utils
+sudo mkdir -p /mnt/efs
+sudo mount -t efs <efs_dns_name>:/ /mnt/efs

@@ -59,7 +59,8 @@ module "network" {
   public_subnets     = var.public_subnets
   private_subnets    = var.private_subnets
   availability_zones = var.availability_zones
-  tags               = local.tags
+
+  tags = local.tags
 }
 
 # ==================================================================
@@ -70,7 +71,8 @@ module "security" {
   source = "./modules/security"
 
   vpc_id = module.network.vpc_id
-  tags   = local.tags
+
+  tags = local.tags
 }
 
 # ==================================================================
@@ -110,6 +112,24 @@ module "redis" {
   redis_security_group_id  = module.security.redis_sg_id
   private_subnet_ids       = module.network.private_subnet_ids
   redis_failover_enabled   = var.redis_failover_enabled
+
+  tags = local.tags
+}
+
+# ==================================================================
+# MÓDULO PARA CREAR EFS (Elastic File System)
+# ==================================================================
+
+module "efs" {
+  source = "./modules/efs"
+
+  efs_name             = var.efs_name
+  efs_performance_mode = var.efs_performance_mode
+  efs_throughput_mode  = var.efs_throughput_mode
+  efs_encrypted        = var.efs_encrypted
+
+  efs_security_group_id = module.security.efs_sg_id
+  efs_subnet_ids        = module.network.private_subnet_ids
 
   tags = local.tags
 }

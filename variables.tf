@@ -143,3 +143,33 @@ variable "redis_failover_enabled" {
   type        = bool
   default     = true # Activado por defecto
 }
+
+# =====================================================================
+# VARIABLES PARA EFS (Elastic File System)
+# =====================================================================
+# Definen los parámetros para la creación del sistema de archivos EFS
+# =====================================================================
+
+variable "efs_name" {
+  description = "Nombre del sistema de archivos EFS"
+  type        = string
+  default     = "lab4-efs"
+}
+
+variable "efs_performance_mode" {
+  description = "Modo de rendimiento del EFS (generalPurpose o maxIO)"
+  type        = string
+  default     = "generalPurpose"
+}
+
+variable "efs_throughput_mode" {
+  description = "Modo de rendimiento del EFS (bursting o provisioned)"
+  type        = string
+  default     = "bursting"
+}
+
+variable "efs_encrypted" {
+  description = "Habilitar encriptación en EFS"
+  type        = bool
+  default     = false # Desactivamos la encriptación
+}
