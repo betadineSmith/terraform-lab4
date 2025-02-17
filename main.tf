@@ -150,3 +150,28 @@ module "route53" {
 
   tags = local.tags
 }
+
+# ============================================================================
+# MÓDULO S3 + CLOUDFRONT
+# ============================================================================
+# - Se crea un bucket S3 privado para almacenar imágenes.
+# - Se configura una distribución CloudFront para servirlas con mejor rendimiento.
+# - Se aplica Origin Access Control (OAC) para restringir el acceso.
+# ============================================================================
+
+module "s3_cloudfront" {
+  source = "./modules/s3_cloudfront"
+
+  # Parámetros del bucket S3
+  s3_bucket_name            = var.s3_bucket_name
+  enable_s3_versioning      = var.enable_s3_versioning
+  enable_s3_encryption      = var.enable_s3_encryption
+  force_destroy_s3          = var.force_destroy_s3
+  
+  # Parámetros de CloudFront
+  cloudfront_price_class      = var.cloudfront_price_class
+  cloudfront_allowed_methods  = var.cloudfront_allowed_methods
+   
+  # Tags globales
+  tags = local.tags
+}

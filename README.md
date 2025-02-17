@@ -156,3 +156,24 @@ Se ha creado un módulo en Terraform para gestionar una **Zona Privada en Route 
 - Simplifica la conectividad de los servicios internos, permitiendo que ECS y otros componentes puedan acceder por nombres de dominio en lugar de direcciones IP.
 - Facilita la administración de recursos sin depender de direcciones dinámicas.
 - Se pueden añadir más registros en el futuro si se despliegan nuevos servicios.
+
+## Módulo S3 + CloudFront
+
+Este módulo implementa una solución optimizada para almacenamiento y distribución de imágenes estáticas.
+
+### Funcionalidad:
+- **S3 (Simple Storage Service)**: Almacena imágenes de forma privada.
+- **CloudFront (CDN)**: Sirve imágenes desde ubicaciones optimizadas para mejorar el rendimiento y reducir la latencia.
+- **OAC (Origin Access Control)**: Garantiza que solo CloudFront puede acceder al bucket.
+- **Caché optimizada**: Se utiliza la política de caché administrada de AWS.
+
+### Recursos creados:
+1. **Bucket S3 privado** (`lab4-s3-images`)  
+2. **Distribución CloudFront** (con caché optimizado)  
+3. **Política de acceso restringido en S3**  
+4. **Configuración de OAC en CloudFront**  
+
+### Outputs:
+- **S3 Bucket URL** → Se usa para que la aplicación pueda subir imágenes.  
+- **CloudFront URL** → Se usa para servir imágenes en la aplicación.
+

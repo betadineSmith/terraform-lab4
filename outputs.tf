@@ -163,3 +163,28 @@ output "efs_dns" {
   description = "Nombre DNS simplificado para Elastic File System (EFS)"
   value       = module.route53.efs_dns
 }
+
+# ==================================================================
+# OUTPUTS DEL MÓDULO S3 + CLOUDFRONT
+# ==================================================================
+# - Se expone la URL de la distribución CloudFront.
+# - Se expone la URL del bucket S3 (para subir imágenes).
+# - Se expone el nombre del bucket S3.
+# ==================================================================
+
+# URL pública de CloudFront
+output "cloudfront_url" {
+  description = "URL de la distribución CloudFront"
+  value       = module.s3_cloudfront.cloudfront_url
+}
+
+output "s3_bucket_url" {
+  description = "URL del bucket S3 donde se almacenan las imágenes"
+  value       = module.s3_cloudfront.s3_bucket_url
+}
+
+# Nombre del bucket S3
+output "s3_bucket_name" {
+  description = "Nombre del bucket S3 donde se almacenan las imágenes"
+  value       = module.s3_cloudfront.s3_bucket_name
+}
