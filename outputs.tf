@@ -90,3 +90,22 @@ output "rds_secret_arn" {
   description = "ARN del secreto de la RDS en Secrets Manager"
   value       = module.rds.rds_secret_arn
 }
+
+# ==================================================================
+# OUTPUTS DEL MÓDULO REDIS (CACHE)
+# ==================================================================
+# - Devuelve la URL de conexión del cluster Redis.
+# - Devuelve el ARN del grupo de replicación.
+# ==================================================================
+
+# Endpoint de conexión a Redis (Primary Endpoint)
+output "redis_endpoint" {
+  description = "Primary Endpoint del cluster Redis"
+  value       = module.redis.redis_endpoint
+}
+
+# ARN del grupo de replicación Redis
+output "redis_arn" {
+  description = "ARN del grupo de replicación Redis"
+  value       = module.redis.redis_arn
+}

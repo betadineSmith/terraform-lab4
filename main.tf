@@ -94,3 +94,22 @@ module "rds" {
 
   tags = local.tags
 }
+
+# ==================================================================
+# MÓDULO PARA ELASTICACHE REDIS
+# ==================================================================
+
+module "redis" {
+  source = "./modules/redis"
+
+  redis_cluster_id         = var.redis_cluster_id
+  redis_subnet_group_name  = var.redis_subnet_group_name
+  redis_instance_type      = var.redis_instance_type
+  redis_node_groups        = var.redis_node_groups
+  redis_replicas_per_group = var.redis_replicas_per_group
+  redis_security_group_id  = module.security.redis_sg_id
+  private_subnet_ids       = module.network.private_subnet_ids
+  redis_failover_enabled   = var.redis_failover_enabled
+
+  tags = local.tags
+}

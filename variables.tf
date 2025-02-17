@@ -108,3 +108,38 @@ variable "db_username" {
 # Se usa para almacenamiento en memoria y caché distribuida.
 # ==========================================================================
 
+variable "redis_cluster_id" {
+  description = "Identificador único del cluster de ElastiCache Redis"
+  type        = string
+  default     = "lab4-redis-cluster"
+}
+
+variable "redis_subnet_group_name" {
+  description = "Nombre del grupo de subnets para Redis"
+  type        = string
+  default     = "lab4-redis-subnet-group"
+}
+
+variable "redis_instance_type" {
+  description = "Tipo de instancia para Redis"
+  type        = string
+  default     = "cache.t4g.micro"
+}
+
+variable "redis_node_groups" {
+  description = "Número de grupos de nodos (shards)"
+  type        = number
+  default     = 1 # 1 nodo principal
+}
+
+variable "redis_replicas_per_group" {
+  description = "Número de réplicas por cada grupo de nodos"
+  type        = number
+  default     = 1 # 1 réplica en otra AZ
+}
+
+variable "redis_failover_enabled" {
+  description = "Habilitar conmutación por error automática en Redis"
+  type        = bool
+  default     = true # Activado por defecto
+}

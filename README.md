@@ -28,7 +28,9 @@ bash scripts/create_s3_dynamodb.sh
 
 Los archivos base son:
 - backend.tf → Configura el backend de Terraform en S3.  
-- provider.tf → Define el proveedor AWS en la región eu-west-3.  
+- provider.tf → Define el proveedor AWS en la región eu-west-3. 
+
+Al final se han unificado esos dos fichemros dentro del main.tf
 
 ## Configuración de Git
 
@@ -39,7 +41,7 @@ Para evitar subir archivos innecesarios al repositorio, se ha añadido un archiv
 
 Estos archivos son generados automáticamente por Terraform y no deben subirse al repositorio.  
 
-## Se ha desarrollado un módulo en Terraform para gestionar la infraestructura de red en AWS, con las siguientes características:
+## Módulo en Terraform para gestionar la infraestructura de red en AWS
 
 - VPC con el CIDR 10.0.0.0/16.
 - 2 Subnets Públicas y 2 Subnets Privadas, distribuidas en diferentes zonas de disponibilidad (AZs).
@@ -88,3 +90,26 @@ Tras la creación de la instancia, Terraform devuelve los siguientes valores:
 Estos valores son utilizados por otros módulos para la integración con microservicios u otros sistemas.  
 
 Este módulo garantiza una infraestructura segura y escalable para la base de datos PostgreSQL.  
+
+## Implementación de ElastiCache Redis
+
+Se ha añadido un módulo en Terraform para gestionar **ElastiCache Redis** con la siguiente configuración:
+
+- **Cluster Redis con alta disponibilidad (Multi-AZ)**
+  - Se crea un **Primary Node** y una **Replica** en diferentes zonas de disponibilidad.
+  - Se habilita **Automatic Failover** para asegurar la continuidad en caso de fallo.
+
+- **Grupo de Subnets Privadas**
+  - El cluster se despliega en las **subnets privadas** dentro de la VPC.
+  - Se ha creado un **ElastiCache Subnet Group** para asociar correctamente las subnets.
+
+- **Seguridad**
+  - Se asocia el **Security Group de Redis**, permitiendo el acceso controlado.
+  - Este SG se conectará con los microservicios en ECS y la base de datos RDS.
+
+- **Configuración de los nodos**
+  - Se ha utilizado una instancia de tipo `cache.t4g.micro`, optimizada para Redis.
+  - Un único **Node Group**, con 1 **Primary Node** y 1 **Replica**.
+
+- **Tags unificados**
+  - Se aplican las mismas etiquetas (`tags.json`) a todos los recursos de Redis.
