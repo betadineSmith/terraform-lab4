@@ -67,3 +67,24 @@ Cada **Security Group** ha sido creado inicialmente **sin reglas**, y las reglas
 - Se han definido **outputs** en Terraform para poder referenciar cada SG en otros módulos.
 - Las **reglas de seguridad** se definirán en una fase posterior según los requisitos de conectividad de cada servicio.
 
+## Implementación de la Base de Datos en RDS
+
+Se ha añadido un módulo en Terraform para la creación y gestión de una instancia de **Amazon RDS con PostgreSQL**.  
+
+### Características del Módulo RDS:
+- **Motor:** PostgreSQL  
+- **Instancia Multi-AZ:** Activado para alta disponibilidad  
+- **Copia de Seguridad:** Retención de backups durante 2 días  
+- **Acceso Público:** Desactivado, la base de datos es privada  
+- **Grupo de Subnets:** Se han definido subnets privadas para el despliegue  
+- **Gestión de Credenciales:** Se usa AWS Secrets Manager para almacenar la contraseña del usuario administrador de la base de datos  
+- **Security Group:** Se asocia al Security Group `lab4-rds-sg`, definido en el módulo de seguridad  
+- **Etiquetas:** Se aplican automáticamente a todos los recursos creados  
+
+### Outputs del Módulo:
+Tras la creación de la instancia, Terraform devuelve los siguientes valores:
+- **Endpoint de conexión** a la base de datos  
+- **ARN del secreto en AWS Secrets Manager**, que almacena las credenciales  
+Estos valores son utilizados por otros módulos para la integración con microservicios u otros sistemas.  
+
+Este módulo garantiza una infraestructura segura y escalable para la base de datos PostgreSQL.  

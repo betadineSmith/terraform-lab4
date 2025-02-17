@@ -1,3 +1,26 @@
+# ======================================================================
+# MÓDULO SECURITY - CREACIÓN DE SECURITY GROUPS
+# ======================================================================
+# Este módulo gestiona la creación de Security Groups en AWS.
+# Inicialmente, se crean sin reglas y se irán definiendo 
+# según las necesidades de los servicios desplegados.
+#
+# Security Groups creados:
+# - RDS PostgreSQL (lab4-rds-sg)
+# - ElasticCache Redis (lab4-redis-sg)
+# - ECS Microservicios (lab4-ecs-sg)
+# - Application Load Balancer (lab4-alb-sg)
+# - Network Load Balancer Interno (lab4-nlb-sg)
+# - Elastic File System (EFS) (lab4-efs-sg)
+#
+# Se requieren dos variables de entrada:
+# - vpc_id: Identificador de la VPC en la que se crean los SGs.
+# - tags: Etiquetas comunes para los recursos.
+#
+# Se generan como outputs los IDs de los SGs para ser utilizados
+# en otros módulos como RDS, Redis, ECS, ALB y EFS.
+# ======================================================================
+
 # Security Group para RDS PostgreSQL
 resource "aws_security_group" "rds_sg" {
   name        = "lab4-rds-sg"

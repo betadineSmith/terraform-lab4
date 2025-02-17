@@ -1,3 +1,10 @@
+# ============================================================
+# OUTPUTS DEL MÓDULO SECURITY
+# ============================================================
+# Devuelve los IDs de los Security Groups creados para que 
+# puedan ser referenciados en otros módulos.
+# ============================================================
+
 # ID del Security Group para RDS PostgreSQL
 output "rds_sg_id" {
   description = "ID del Security Group para RDS"

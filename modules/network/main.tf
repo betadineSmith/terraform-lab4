@@ -1,3 +1,16 @@
+# ===========================================================================================
+# MÓDULO NETWORK - CONFIGURACIÓN DE INFRAESTRUCTURA DE RED
+# ===========================================================================================
+# Este módulo crea y configura la infraestructura de red en AWS.
+# Incluye:
+# - Creación de una VPC con un rango CIDR definido.
+# - Creación de Subnets Públicas y Privadas distribuidas en distintas AZs.
+# - Configuración de un Internet Gateway (IGW) para salida a internet.
+# - Creación de NAT Gateways para permitir la conexión a internet desde subnets privadas.
+# - Configuración de Tablas de Ruteo para gestionar el tráfico dentro de la VPC.
+# - Aplicación de etiquetas (tags) unificadas a todos los recursos.
+# ============================================================================================
+
 # Crear la VPC
 resource "aws_vpc" "main" {
   cidr_block           = var.vpc_cidr
@@ -24,10 +37,10 @@ resource "aws_subnet" "public" {
 
 # Crear Subnets Privadas
 resource "aws_subnet" "private" {
-  count                   = length(var.private_subnets)
-  vpc_id                  = aws_vpc.main.id
-  cidr_block              = var.private_subnets[count.index]
-  availability_zone       = var.availability_zones[count.index]
+  count             = length(var.private_subnets)
+  vpc_id            = aws_vpc.main.id
+  cidr_block        = var.private_subnets[count.index]
+  availability_zone = var.availability_zones[count.index]
 
   tags = merge(var.tags, {
     Name = "lab4-private-subnet-${count.index + 1}"
@@ -100,8 +113,8 @@ resource "aws_route_table" "private" {
 
 # Crear una ruta `0.0.0.0/0` en cada tabla de rutas, apuntando al NAT correspondiente
 resource "aws_route" "private_nat_access" {
-  count          = length(var.private_subnets)
-  route_table_id = aws_route_table.private[count.index].id
+  count                  = length(var.private_subnets)
+  route_table_id         = aws_route_table.private[count.index].id
   destination_cidr_block = "0.0.0.0/0"
   nat_gateway_id         = aws_nat_gateway.nat[count.index].id
 }
