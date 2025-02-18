@@ -1,3 +1,5 @@
+/*
+
 # ==================================================================
 # OUTPUTS DEL MÓDULO NETWORK (RED)
 # ==================================================================
@@ -216,3 +218,5 @@ output "nlb_listeners_arns" {
   value       = module.alb_external.nlb_listeners_arns
   description = "Lista de ARNs de los Listeners TCP en el Network Load Balancer (NLB)."
 }
+
+*/

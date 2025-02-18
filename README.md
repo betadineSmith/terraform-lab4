@@ -230,3 +230,45 @@ module "alb_external" {
   tags                       = { Environment = "dev" }
 }
 ```
+
+# Módulo de Route 53 - Zona Pública
+
+Este módulo de Terraform crea una **zona pública en AWS Route 53** y configura **registros ALIAS** para apuntar a un **Application Load Balancer (ALB)**.
+
+## Características
+
+- **Crea una zona pública en Route 53** para el dominio proporcionado.
+- **Registros ALIAS para el Load Balancer**:
+  - `jmbmcloud.com` → Apunta al Load Balancer.
+  - `www.jmbmcloud.com` → Apunta al Load Balancer.
+- **Soporta etiquetas (`tags`)** para la zona pública.
+
+---
+
+## Variables de Entrada
+
+| Nombre         | Descripción                                      | Tipo       | Requerido |
+|---------------|--------------------------------------------------|------------|-----------|
+| `domain_name` | Nombre del dominio para la zona pública.        | `string`   | Sí |
+| `alb_dns_name` | Nombre DNS del Load Balancer (ALB).            | `string`   | Sí |
+| `alb_zone_id` | ID de la zona del Load Balancer (para ALIAS).    | `string`   | Sí |
+| `tags`        | Mapa de etiquetas para la zona pública.         | `map`      | No (opcional) |
+
+---
+
+## Uso del Módulo
+
+Ejemplo de cómo incluir este módulo en `main.tf`:
+
+```hcl
+module "route53_public" {
+  source       = "./modules/route53_public"
+  domain_name  = "jmbmcloud.com"
+  alb_dns_name = module.alb_external.load_balancer_dns_name
+  alb_zone_id  = module.alb_external.load_balancer_zone_id
+  tags = {
+    Environment = "Production"
+    Project     = "WebApp"
+  }
+}
+```

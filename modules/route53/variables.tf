@@ -9,6 +9,7 @@
 variable "private_zone_name" {
   description = "Nombre de la zona privada en Route 53 (ej. lab4.local)"
   type        = string
+  default     = null
 }
 
 # ID de la VPC donde se asociará la zona privada

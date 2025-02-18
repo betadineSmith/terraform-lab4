@@ -191,3 +191,16 @@ module "alb_external" {
 
   tags = local.tags
 }
+
+# ==================================================================
+# MÓDULO PARA CREAR Rourte53 - zona publica
+# ==================================================================
+
+module "route53_public" {
+  source       = "./modules/route53_public"
+  domain_name  = "jmbmcloud.com"
+  alb_dns_name = module.alb_external.load_balancer_dns_name
+  alb_zone_id  = module.alb_external.load_balancer_zone_id
+
+  tags = local.tags
+}

@@ -25,3 +25,13 @@ output "nlb_listeners_arns" {
   description = "Lista de ARNs de los Listeners TCP creados en el Network Load Balancer (NLB), uno por cada puerto en 'lb_listener_ports'."
   value       = var.lb_type == "network" ? aws_lb_listener.nlb[*].arn : []
 }
+
+output "load_balancer_dns_name" {
+  value       = aws_lb.load_balancer.dns_name
+  description = "Nombre DNS del Load Balancer"
+}
+
+output "load_balancer_zone_id" {
+  value       = aws_lb.load_balancer.zone_id
+  description = "ID de la zona del Load Balancer"
+}
