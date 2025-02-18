@@ -141,8 +141,6 @@ resource "aws_cloudfront_distribution" "cloudfront" {
     acm_certificate_arn      = data.aws_acm_certificate.cdn_cert.arn
     ssl_support_method       = "sni-only"
     minimum_protocol_version = "TLSv1.2_2021"
-    # Se mantiene el certificado predeterminado de CloudFront
-    cloudfront_default_certificate = true
   }
 
   # Sin restricciones geográficas
