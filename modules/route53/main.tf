@@ -60,3 +60,12 @@ resource "aws_route53_record" "efs" {
   ttl     = 300
   records = [var.efs_dns_name]
 }
+
+# CNAME Bucket S3
+resource "aws_route53_record" "s3" {
+  zone_id = aws_route53_zone.private_zone.zone_id
+  name    = "s3.${var.private_zone_name}"
+  type    = "CNAME"
+  ttl     = 300
+  records = [var.s3_dns_name]
+}

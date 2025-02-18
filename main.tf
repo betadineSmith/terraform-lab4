@@ -134,23 +134,6 @@ module "efs" {
   tags = local.tags
 }
 
-# ==================================================================
-# MÓDULO PARA CREAR Rourte53 - zona privada
-# ==================================================================
-
-module "route53" {
-  source = "./modules/route53"
-
-  private_zone_name      = "lab4.local" # Dominio interno
-  vpc_id                 = module.network.vpc_id
-  rds_endpoint           = module.rds.rds_endpoint
-  redis_primary_endpoint = module.redis.redis_primary_endpoint
-  redis_reader_endpoint  = module.redis.redis_reader_endpoint
-  efs_dns_name           = module.efs.efs_dns_name
-
-  tags = local.tags
-}
-
 # ============================================================================
 # MÓDULO S3 + CLOUDFRONT
 # ============================================================================
@@ -176,6 +159,25 @@ module "s3_cloudfront" {
   tags = local.tags
 }
 
+# ==================================================================
+# MÓDULO PARA CREAR Rourte53 - zona privada
+# ==================================================================
+
+module "route53" {
+  source = "./modules/route53"
+
+  private_zone_name      = "lab4.local" # Dominio interno
+  vpc_id                 = module.network.vpc_id
+  rds_endpoint           = module.rds.rds_endpoint
+  redis_primary_endpoint = module.redis.redis_primary_endpoint
+  redis_reader_endpoint  = module.redis.redis_reader_endpoint
+  efs_dns_name           = module.efs.efs_dns_name
+  s3_dns_name            = module.s3_cloudfront.s3_bucket_url
+
+  tags = local.tags
+}
+
+
 # =======================================================
 # MÓDULO LOAD BALANCER ALB Application Load Balancer
 # =======================================================
@@ -197,10 +199,11 @@ module "alb_external" {
 # ==================================================================
 
 module "route53_public" {
-  source       = "./modules/route53_public"
-  domain_name  = "jmbmcloud.com"
-  alb_dns_name = module.alb_external.load_balancer_dns_name
-  alb_zone_id  = module.alb_external.load_balancer_zone_id
+  source              = "./modules/route53_public"
+  domain_name         = "jmbmcloud.com"
+  alb_dns_name        = module.alb_external.load_balancer_dns_name
+  alb_zone_id         = module.alb_external.load_balancer_zone_id
+  cloudfront_dns_name = module.s3_cloudfront.cloudfront_url
 
   tags = local.tags
 }

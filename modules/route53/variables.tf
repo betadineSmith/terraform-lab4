@@ -42,6 +42,13 @@ variable "efs_dns_name" {
   type        = string
 }
 
+# URL Bucket S3
+variable "s3_dns_name" {
+  description = "Endpoint del Elastic File System (EFS)"
+  type        = string
+}
+
+
 # Tags generales
 variable "tags" {
   description = "Etiquetas comunes para los recursos"

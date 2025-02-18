@@ -37,3 +37,9 @@ output "efs_dns" {
   description = "Nombre DNS simplificado para Elastic File System (EFS)"
   value       = aws_route53_record.efs.name
 }
+
+# Nombre DNS simplificado para Bucket S3
+output "s3_dns" {
+  description = "Nombre DNS simplificado para Bucket S3"
+  value       = aws_route53_record.s3.name
+}

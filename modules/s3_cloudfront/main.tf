@@ -88,6 +88,25 @@ resource "aws_s3_bucket_policy" "s3_policy" {
   })
 }
 
+##################################################################################
+#  OJO !!!! Este recurso se crea por fuera de Terraform 
+##################################################################################
+# ============================================================================
+# OBTENER EL CERTIFICADO SSL DESDE ACM EN us-east-1
+# ============================================================================
+
+# Provider secundario: AWS en Virginia (us-east-1) para CloudFront y ACM
+provider "aws" {
+  alias  = "virginia"
+  region = "us-east-1"
+}
+
+data "aws_acm_certificate" "cdn_cert" {
+  provider    = aws.virginia # Se obtiene el certificado desde us-east-1
+  domain      = "*.jmbmcloud.com"
+  most_recent = true
+}
+
 # ----------------------------------------------------------------------------
 # CREACIÓN DE LA DISTRIBUCIÓN DE CLOUDFRONT
 # ----------------------------------------------------------------------------
@@ -95,6 +114,9 @@ resource "aws_cloudfront_distribution" "cloudfront" {
   enabled             = true
   price_class         = var.cloudfront_price_class
   default_root_object = "index.html"
+
+  # Se añade el alias para el dominio personalizado
+  aliases = ["cdn.jmbmcloud.com"]
 
   # Configuración del origen: el bucket S3
   origin {
@@ -115,6 +137,11 @@ resource "aws_cloudfront_distribution" "cloudfront" {
 
   # Configuración de certificado SSL por defecto
   viewer_certificate {
+    # Se usa el certificado personalizado
+    acm_certificate_arn      = data.aws_acm_certificate.cdn_cert.arn
+    ssl_support_method       = "sni-only"
+    minimum_protocol_version = "TLSv1.2_2021"
+    # Se mantiene el certificado predeterminado de CloudFront
     cloudfront_default_certificate = true
   }
 

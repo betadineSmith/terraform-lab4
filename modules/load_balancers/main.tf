@@ -58,6 +58,9 @@ resource "aws_lb_listener" "http" {
   }
 }
 
+##################################################################################
+#  OJO !!!! Este recurso se crea por fuera de Terraform 
+##################################################################################
 # Buscar el certificado ACM con el nombre de dominio
 data "aws_acm_certificate" "ssl_cert" {
   domain      = "*.jmbmcloud.com" # Filtra por el nombre del dominio
