@@ -177,3 +177,56 @@ Este módulo implementa una solución optimizada para almacenamiento y distribuc
 - **S3 Bucket URL** → Se usa para que la aplicación pueda subir imágenes.  
 - **CloudFront URL** → Se usa para servir imágenes en la aplicación.
 
+# Módulo de Load Balancer (ALB/NLB)
+
+Este módulo de Terraform crea un Application Load Balancer (ALB) o un Network Load Balancer (NLB) en AWS, junto con sus Listeners y configuraciones asociadas.
+
+## Características
+
+- Soporta la creación de ALB o NLB según el tipo definido en `var.lb_type`.
+- Permite la configuración de Listeners HTTP (80) y HTTPS (443) para ALB.
+- Configuración automática de redirección HTTP a HTTPS si `enable_https` está activado.
+- Soporte para múltiples puertos TCP en NLB a través de `var.lb_listener_ports`.
+- Integración con AWS ACM para el manejo automático de certificados SSL.
+- Se pueden definir etiquetas (`tags`) para todos los recursos.
+
+## Variables de Entrada
+
+| Nombre                          | Descripción                                               | Tipo      | Valor por defecto  |
+|----------------------------     |---------------------------------------------------------- |-----------|--------------------|
+| `load_balancer_name`            | Nombre del Load Balancer.                                 | `string`  | -                  |
+| `lb_visibility`                 | Tipo de visibilidad (`internal` o `external`).            | `string`  | `external`         |
+| `lb_type`                       | Tipo de Load Balancer (`application` o `network`).        | `string`  | `application`      |
+| `load_balancer_subnets`         | Lista de subnets donde desplegar el Load Balancer.        | `list`    | -                  |
+| `load_balancer_security_group`  | ID del Security Group del Load Balancer.                  | `string`  | -                  |
+| `enable_https`                  | Habilitar HTTPS en ALB (`true` o `false`).                | `bool`    | `false`            |
+| `certificate_arn`               | ARN del certificado SSL en ACM.                           | `string`  | -                  |
+| `lb_listener_ports`             | Lista de puertos a configurar en NLB.                     | `list`    | `[]`               |
+| `tags`                          | Mapa de etiquetas a aplicar en los recursos.              | `map`     | `{}`               |
+
+## Outputs
+
+| Nombre                    | Descripción                                                  |
+|---------------------------|--------------------------------------------------------------|
+| `load_balancer_arn`       | ARN del Load Balancer creado (ALB o NLB).                    |
+| `http_listener_arn`       | ARN del Listener HTTP en ALB (si aplica).                    |
+| `https_listener_arn`      | ARN del Listener HTTPS en ALB (si aplica).                   |
+| `nlb_listeners_arns`      | Lista de ARNs de los Listeners TCP en NLB (si aplica).       | 
+
+## Uso del Módulo
+
+Ejemplo de cómo incluir este módulo en `main.tf`:
+
+```hcl
+module "alb_external" {
+  source                     = "./modules/load_balancer"
+  load_balancer_name         = "mi-load-balancer"
+  lb_visibility              = "external"
+  lb_type                    = "application"
+  load_balancer_subnets      = ["subnet-12345678", "subnet-87654321"]
+  load_balancer_security_group = "sg-0123456789abcdef"
+  enable_https               = true
+  lb_listener_ports          = [80, 443]
+  tags                       = { Environment = "dev" }
+}
+```

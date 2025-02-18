@@ -188,3 +188,31 @@ output "s3_bucket_name" {
   description = "Nombre del bucket S3 donde se almacenan las imágenes"
   value       = module.s3_cloudfront.s3_bucket_name
 }
+
+# ==================================================================
+# OUTPUTS DEL MÓDULO LOAD BALANCER
+# ==================================================================
+
+# ARN del Load Balancer creado (ALB o NLB)
+output "load_balancer_arn" {
+  value       = module.alb_external.load_balancer_arn
+  description = "ARN del Load Balancer (ALB o NLB), expuesto desde el módulo load_balancer."
+}
+
+# ARN del Listener HTTP (80) si es ALB
+output "http_listener_arn" {
+  value       = module.alb_external.http_listener_arn
+  description = "ARN del Listener HTTP en el Application Load Balancer (ALB), si existe."
+}
+
+# ARN del Listener HTTPS (443) si es ALB y HTTPS está habilitado
+output "https_listener_arn" {
+  value       = module.alb_external.https_listener_arn
+  description = "ARN del Listener HTTPS en el Application Load Balancer (ALB), si existe."
+}
+
+# Lista de ARNs de los Listeners NLB (TCP)
+output "nlb_listeners_arns" {
+  value       = module.alb_external.nlb_listeners_arns
+  description = "Lista de ARNs de los Listeners TCP en el Network Load Balancer (NLB)."
+}

@@ -231,3 +231,46 @@ variable "cloudfront_allowed_methods" {
   type        = list(string)
   default     = ["GET", "HEAD", "OPTIONS"]
 }
+
+# ===========================================================================================
+# VARIABLES DEL MÓDULO LOAD BALANCER
+# ===========================================================================================
+# ===========================================================================================
+
+# Indicar si el Load Balancer es interno o externo
+variable "lb_visibility" {
+  description = "Visibilidad del Load Balancer (public o internal)"
+  type        = string
+  default     = "public"
+
+  validation {
+    condition     = contains(["public", "internal"], var.lb_visibility)
+    error_message = "El valor de 'lb_visibility' debe ser 'public' o 'internal'."
+  }
+}
+
+# Tipo de Load Balancer: Application Load Balancer (ALB) o Network Load Balancer (NLB)
+variable "lb_type" {
+  description = "Tipo de Load Balancer (application o network)"
+  type        = string
+  default     = "application"
+
+  validation {
+    condition     = contains(["application", "network"], var.lb_type)
+    error_message = "El valor de 'lb_type' debe ser 'application' o 'network'."
+  }
+}
+
+# Activar o no HTTPS
+variable "enable_https" {
+  description = "Define si el Load Balancer usará HTTPS con certificado SSL"
+  type        = bool
+  default     = false
+}
+
+# Lista de puertos para Network Load Balancer (NLB)
+variable "nlb_listener_ports" {
+  description = "Lista de puertos en los que escuchará el Network Load Balancer (NLB)"
+  type        = list(number)
+  default     = [5432, 6379] # Por defecto PostgreSQL y Redis.
+}

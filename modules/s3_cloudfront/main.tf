@@ -14,7 +14,7 @@
 # -------------------------------------------------------------
 resource "aws_s3_bucket" "images" {
   bucket        = var.s3_bucket_name
-  force_destroy = var.force_destroy_s3 
+  force_destroy = var.force_destroy_s3
 
   tags = merge(var.tags, {
     Name = var.s3_bucket_name
@@ -102,7 +102,7 @@ resource "aws_cloudfront_distribution" "cloudfront" {
     origin_access_control_id = aws_cloudfront_origin_access_control.oac.id
     origin_id                = "S3-${aws_s3_bucket.images.id}"
   }
-  
+
   # Configuración de caché y acceso
   default_cache_behavior {
     target_origin_id       = "S3-${aws_s3_bucket.images.id}"

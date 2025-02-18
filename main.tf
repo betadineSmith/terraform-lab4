@@ -163,15 +163,31 @@ module "s3_cloudfront" {
   source = "./modules/s3_cloudfront"
 
   # Parámetros del bucket S3
-  s3_bucket_name            = var.s3_bucket_name
-  enable_s3_versioning      = var.enable_s3_versioning
-  enable_s3_encryption      = var.enable_s3_encryption
-  force_destroy_s3          = var.force_destroy_s3
-  
+  s3_bucket_name       = var.s3_bucket_name
+  enable_s3_versioning = var.enable_s3_versioning
+  enable_s3_encryption = var.enable_s3_encryption
+  force_destroy_s3     = var.force_destroy_s3
+
   # Parámetros de CloudFront
-  cloudfront_price_class      = var.cloudfront_price_class
-  cloudfront_allowed_methods  = var.cloudfront_allowed_methods
-   
+  cloudfront_price_class     = var.cloudfront_price_class
+  cloudfront_allowed_methods = var.cloudfront_allowed_methods
+
   # Tags globales
+  tags = local.tags
+}
+
+# =======================================================
+# MÓDULO LOAD BALANCER ALB Application Load Balancer
+# =======================================================
+module "alb_external" {
+  source = "./modules/load_balancers"
+
+  load_balancer_name           = "lab4-alb-external"
+  load_balancer_subnets        = var.lb_visibility == "public" ? module.network.public_subnet_ids : module.network.private_subnet_ids
+  load_balancer_security_group = module.security.alb_sg_id
+  lb_visibility                = "public"
+  lb_type                      = "application"
+  enable_https                 = true
+
   tags = local.tags
 }
