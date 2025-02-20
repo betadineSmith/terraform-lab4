@@ -79,7 +79,6 @@ module "network_backup" {
   tags = local.tags
 }
 
-
 # ======================
 # VPC Peerig Conection
 # ======================
@@ -241,3 +240,45 @@ module "route53_public" {
   tags = local.tags
 }
 
+# ==================================================================
+# MÓDULO PARA CREAR Cluster Fargate
+# ==================================================================
+
+module "ecs_fargate" {
+  source = "./modules/ecs_fargate"
+
+  ecs_cluster_name               = "lab4-ECS-Fargate"
+  ecs_execution_role_arn         = module.iam_roles.ecs_execution_role_arn
+  ecs_task_role_arn              = module.iam_roles.ecs_task_role_arn
+  ecs_subnets                    = module.network.private_subnet_ids
+  service_discovery_namespace_id = module.service_discovery.namespace_id
+
+  services = {
+    "memcached" = {
+      cpu               = 256
+      memory            = 512
+      image             = "memcached:latest"
+      min_tasks         = 2
+      security_group_id = module.security.ecs_mem_sg_id
+    } /*,
+    "app_backend" = {
+      cpu               = 512
+      memory            = 1024
+      image             = "my-app-backend:latest"
+      min_tasks         = 2
+      security_group_id = module.security.ecs_sg_id
+    }*/
+  }
+}
+
+module "iam_roles" {
+  source = "./modules/iam_roles"
+  tags   = local.tags
+}
+
+module "service_discovery" {
+  source    = "./modules/service_discovery"
+  namespace = "fargate.local"
+  vpc_id    = module.network.vpc_id
+  tags      = local.tags
+}

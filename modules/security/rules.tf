@@ -139,3 +139,31 @@ resource "aws_security_group_rule" "efs_egress" {
   cidr_blocks       = ["0.0.0.0/0"]
   security_group_id = aws_security_group.efs_sg.id
 }
+
+# ==============================================================================
+# REGLAS DE SEGURIDAD PARA EL SECURITY GROUP DE LOS MICROSERVICIOS (ECS)
+#     Memcached 11211
+# ==============================================================================
+# Este SG protege los microservicios desplegados en ECS Memcached.
+# Permite conexiones en el puerto 11211 dentro de la VPC.
+resource "aws_security_group_rule" "ecs_mem_ingress" {
+  type              = "ingress"
+  from_port         = 11211
+  to_port           = 11211
+  protocol          = "tcp"
+  cidr_blocks       = ["10.0.0.0/16"]
+  security_group_id = aws_security_group.ecs_mem_sg.id
+
+  # Alternativa futura para encadenar con el SG del ALB:
+  # source_security_group_id = aws_security_group.alb_sg.id
+}
+
+# Permitir a los microservicios en ECS realizar llamadas de salida (a bases de datos, APIs, etc.).
+resource "aws_security_group_rule" "ecs_mem_egress" {
+  type              = "egress"
+  from_port         = 0
+  to_port           = 0
+  protocol          = "-1"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = aws_security_group.ecs_mem_sg.id
+}

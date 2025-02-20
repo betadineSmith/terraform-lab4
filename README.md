@@ -371,3 +371,66 @@ resource "aws_route" "peering_route_peer" {
 - **Las reglas de seguridad (SGs y NACLs) deben permitir el tráfico entre VPCs** para que la conexión funcione.
 - **Si las VPCs están en cuentas diferentes**, la aceptación del peering debe realizarse manualmente si `auto_accept` está deshabilitado.
 
+#  Módulo Terraform: ECS Fargate para Memcached
+
+Este módulo de Terraform implementa un **Cluster ECS Fargate** para desplegar **Memcached** de manera escalable en AWS.
+
+## Características
+- **ECS Fargate** con tareas para **Memcached**.
+- **Task Definition optimizada** con autoescalado dinámico.
+- **Service Discovery** con Route 53 (`fargate.local`).
+- **Integración con aplicaciones en ECS o EC2**.
+- **Auto Scaling basado en número de instancias**.
+
+---
+
+##  Requisitos
+- **Cuenta de AWS con IAM configurado**
+- **VPC y subnets privadas para ECS**
+- **Route 53 configurado (`fargate.local`)**
+- **Cluster ECS existente (`lab4-ECS-Fargate`)**
+- **Security Group adecuado para tráfico en el puerto 11211**
+
+---
+
+## Variables de Entrada (`variables.tf`)
+| Variable | Descripción | Tipo | Valor por Defecto |
+|----------|------------|------|------------------|
+| `ecs_cluster_name` | Nombre del cluster ECS | `string` | `"lab4-ECS-Fargate"` |
+| `ecs_task_role_arn` | ARN del rol de ejecución de ECS | `string` | `""` |
+| `ecs_execution_role_arn` | ARN del rol de ejecución de tareas ECS | `string` | `""` |
+| `ecs_subnets` | Subnets privadas donde desplegar Fargate | `list(string)` | `[]` |
+| `memcached_sg_id` | ID del Security Group para Memcached | `string` | `""` |
+| `service_discovery_namespace_id` | ID del namespace de Service Discovery | `string` | `""` |
+| `min_memcached_tasks` | Mínimo de tareas Memcached | `number` | `2` |
+| `max_memcached_tasks` | Máximo de tareas Memcached | `number` | `4` |
+
+---
+
+##  Outputs (`outputs.tf`)
+| Output | Descripción |
+|--------|------------|
+| `memcached_service_arn` | ARN del servicio ECS Memcached |
+| `memcached_task_definition_arn` | ARN de la Task Definition Memcached |
+| `memcached_service_name` | Nombre del servicio ECS Memcached |
+| `memcached_service_endpoint` | Endpoint de Memcached (`memcached.fargate.local`) |
+
+---
+
+##  Uso del Módulo
+### **Ejemplo de Uso en Terraform**
+```hcl
+module "ecs_memcached" {
+  source = "./modules/ecs_fargate_memcached"
+
+  ecs_cluster_name       = "lab4-ECS-Fargate"
+  ecs_execution_role_arn = module.iam_roles.ecs_execution_role_arn
+  ecs_task_role_arn      = module.iam_roles.ecs_task_role_arn
+  ecs_subnets            = module.network.private_subnet_ids
+  memcached_sg_id        = module.security_groups.ecs_mem_sg
+  service_discovery_namespace_id = module.service_discovery.namespace_id
+  min_memcached_tasks    = 2
+  max_memcached_tasks    = 4
+
+  tags = local.tags
+}

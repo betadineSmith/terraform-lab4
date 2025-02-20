@@ -54,6 +54,17 @@ resource "aws_security_group" "ecs_sg" {
   })
 }
 
+# Security Group para los Microservicios en ECS en ECS Memcached
+resource "aws_security_group" "ecs_mem_sg" {
+  name        = "lab4-ecs-memcached-sg"
+  description = "Security Group para los Microservicios en ECS Memcached"
+  vpc_id      = var.vpc_id
+
+  tags = merge(var.tags, {
+    Name = "lab4-ecs-memcached-sg"
+  })
+}
+
 # Security Group para el ALB (Application Load Balancer)
 resource "aws_security_group" "alb_sg" {
   name        = "lab4-alb-sg"

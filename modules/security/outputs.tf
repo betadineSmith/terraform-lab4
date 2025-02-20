@@ -24,6 +24,12 @@ output "ecs_sg_id" {
   value       = aws_security_group.ecs_sg.id
 }
 
+# ID del Security Group para los Microservicios en ECS Memcached
+output "ecs_mem_sg_id" {
+  description = "ID del Security Group para ECS Memcached"
+  value       = aws_security_group.ecs_mem_sg.id
+}
+
 # ID del Security Group para el ALB (Application Load Balancer)
 output "alb_sg_id" {
   description = "ID del Security Group para el ALB"
