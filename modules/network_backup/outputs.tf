@@ -33,7 +33,8 @@ output "private_subnet_ids" {
   value       = aws_subnet.private[*].id
 }
 
+# Tablas de rutas privadas de la VPC de backup
 output "private_route_table_ids" {
-  description = "Lista de IDs de las tablas de rutas privadas de la VPC principal"
+  description = "Lista de IDs de las tablas de rutas privadas de la VPC de backup"
   value       = aws_route_table.private[*].id
 }

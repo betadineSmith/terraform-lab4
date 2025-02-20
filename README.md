@@ -272,3 +272,102 @@ module "route53_public" {
   }
 }
 ```
+
+### Terraform Module: VPC Peering
+
+#### Descripción
+Este módulo de Terraform establece una conexión de **VPC Peering** entre dos VPCs en AWS y configura las rutas necesarias para la comunicación.
+
+---
+
+## **Recursos Creado por el Módulo**
+- `aws_vpc_peering_connection`: Crea la conexión de VPC Peering.
+- `aws_route`: Configura las rutas en ambas VPCs para permitir la comunicación.
+
+---
+
+## **Uso del Módulo**
+```hcl
+module "vpc_peering" {
+  source = "./modules/vpc_peering"
+
+  vpc_id             = module.network.vpc_id
+  peer_vpc_id        = module.network_backup.vpc_id
+  vpc_cidr           = var.vpc_cidr
+  peer_vpc_cidr      = var.vpc_cidr_backup
+  route_table_ids_main = module.network.private_route_table_ids
+  route_table_ids_peer = module.network_backup.private_route_table_ids
+
+  tags = local.tags
+}
+```
+
+---
+
+## **Parámetros del Módulo**
+
+| Nombre                   | Descripción                                            | Tipo           | Requerido |
+|--------------------------|--------------------------------------------------------|---------------|-----------|
+| `vpc_id`                 | ID de la VPC principal                                | `string`      | Yes        |
+| `peer_vpc_id`            | ID de la VPC de backup                               | `string`      | Yes       |
+| `vpc_cidr`               | CIDR de la VPC principal                             | `string`      | Yes        |
+| `peer_vpc_cidr`          | CIDR de la VPC de backup                            | `string`      | Yes        |
+| `route_table_ids_main`   | Lista de tablas de rutas de la VPC principal        | `list(string)`| Yes       |
+| `route_table_ids_peer`   | Lista de tablas de rutas de la VPC de backup        | `list(string)`| Yes       |
+| `auto_accept`            | Aceptar automáticamente el peering (default: `true`) | `bool`        | No        |
+| `tags`                   | Etiquetas a aplicar en los recursos                  | `map(string)` | No        |
+
+---
+
+## **Outputs Generados**
+
+| Nombre          | Descripción                                    |
+|----------------|------------------------------------------------|
+| `peering_id`   | ID de la conexión de peering creada           |
+| `main_vpc_routes` | Rutas creadas en la VPC principal           |
+| `peer_vpc_routes` | Rutas creadas en la VPC de backup           |
+
+---
+
+## **Código del Módulo**
+
+### **1️ Creación de la Conexión VPC Peering**
+```hcl
+resource "aws_vpc_peering_connection" "this" {
+  vpc_id      = var.vpc_id
+  peer_vpc_id = var.peer_vpc_id
+  auto_accept = var.auto_accept
+
+  tags = merge(var.tags, { Name = "vpc-peering-${var.vpc_id}-${var.peer_vpc_id}" })
+}
+```
+
+### **2️ Configuración de Rutas en la VPC Principal**
+```hcl
+resource "aws_route" "peering_route_main" {
+  count = length(var.route_table_ids_main)
+
+  route_table_id            = var.route_table_ids_main[count.index]
+  destination_cidr_block    = var.peer_vpc_cidr
+  vpc_peering_connection_id = aws_vpc_peering_connection.this.id
+}
+```
+
+### **3 Configuración de Rutas en la VPC de Backup**
+```hcl
+resource "aws_route" "peering_route_peer" {
+  count = length(var.route_table_ids_peer)
+
+  route_table_id            = var.route_table_ids_peer[count.index]
+  destination_cidr_block    = var.vpc_cidr
+  vpc_peering_connection_id = aws_vpc_peering_connection.this.id
+}
+```
+
+---
+
+##  **Notas**
+- **Las rutas se configuran automáticamente**, no es necesario agregarlas manualmente.
+- **Las reglas de seguridad (SGs y NACLs) deben permitir el tráfico entre VPCs** para que la conexión funcione.
+- **Si las VPCs están en cuentas diferentes**, la aceptación del peering debe realizarse manualmente si `auto_accept` está deshabilitado.
+

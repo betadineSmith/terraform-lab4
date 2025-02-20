@@ -52,6 +52,9 @@ locals {
 # MÓDULO DE RED - CREACIÓN DE LA INFRAESTRUCTURA DE RED
 # ==================================================================
 
+# ==============
+# VPC
+# ==============
 module "network" {
   source = "./modules/network"
 
@@ -59,6 +62,36 @@ module "network" {
   public_subnets     = var.public_subnets
   private_subnets    = var.private_subnets
   availability_zones = var.availability_zones
+
+  tags = local.tags
+}
+# ==============
+# VPC Backup
+# ==============
+module "network_backup" {
+  source = "./modules/network_backup"
+
+  vpc_cidr           = var.vpc_cidr_backup
+  public_subnets     = var.public_subnets_backup
+  private_subnets    = var.private_subnets_backup
+  availability_zones = var.availability_zones
+
+  tags = local.tags
+}
+
+
+# ======================
+# VPC Peerig Conection
+# ======================
+module "vpc_peering" {
+  source = "./modules/vpc_peering"
+
+  vpc_id               = module.network.vpc_id
+  peer_vpc_id          = module.network_backup.vpc_id
+  vpc_cidr             = var.vpc_cidr
+  peer_vpc_cidr        = var.vpc_cidr_backup
+  route_table_ids_main = module.network.private_route_table_ids
+  route_table_ids_peer = module.network_backup.private_route_table_ids
 
   tags = local.tags
 }
@@ -207,3 +240,4 @@ module "route53_public" {
 
   tags = local.tags
 }
+

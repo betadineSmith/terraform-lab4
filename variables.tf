@@ -8,6 +8,11 @@
 # NOTA: La variable de tags no se define aquí porque se genera en el `main.tf`
 # usando `locals { tags = jsondecode(file("${path.root}/tags.json")) }`.
 
+variable "availability_zones" {
+  description = "Lista de Availability Zones donde se despliegan los recursos"
+  type        = list(string)
+  default     = ["eu-west-3a", "eu-west-3b"]
+}
 
 # ==========================================================================
 # VARIABLES PARA NETWORKING (VPC y Subnets)
@@ -34,10 +39,26 @@ variable "private_subnets" {
   default     = ["10.0.3.0/24", "10.0.4.0/24"]
 }
 
-variable "availability_zones" {
-  description = "Lista de Availability Zones donde se despliegan los recursos"
+# ==========================================================================
+# VARIABLES PARA NETWORKING (VPC y Subnets) para BACKUP
+# ==========================================================================
+
+variable "vpc_cidr_backup" {
+  description = "CIDR de la VPC"
+  type        = string
+  default     = "10.1.0.0/16"
+}
+
+variable "public_subnets_backup" {
+  description = "Lista de CIDRs para Subnets Públicas"
   type        = list(string)
-  default     = ["eu-west-3a", "eu-west-3b"]
+  default     = ["10.1.1.0/24", "10.1.2.0/24"]
+}
+
+variable "private_subnets_backup" {
+  description = "Lista de CIDRs para Subnets Privadas"
+  type        = list(string)
+  default     = ["10.1.3.0/24", "10.1.4.0/24"]
 }
 
 # ==========================================================================
