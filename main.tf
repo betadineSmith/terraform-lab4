@@ -2,7 +2,7 @@
 # Terraform - AWS Lab 4: Infraestructura en AWS
 # ========================================================================
 # Este archivo `main.tf` es el punto de entrada principal para la 
-# infraestructura de AWS en este proyecto. Define la configuración 
+# infraestructura de AWS en este proyecto. Define la configuración clear
 # del proveedor, el backend para almacenar el estado y los módulos 
 # de Terraform que gestionan todos los recursos.
 #
@@ -42,6 +42,13 @@ terraform {
 # ==================================================================
 # CARGA DE VARIABLES GLOBALES
 # ==================================================================
+
+variable "ami" {
+  description = "AMI preexistente en la región de París (eu-west-3)"
+  type        = string
+  default     = "ami-0091da954fd26a2bc" # lab4-AMI-Drupal-inicial
+}
+
 
 # Carga las etiquetas desde el archivo tags.json
 locals {
@@ -282,3 +289,27 @@ module "service_discovery" {
   vpc_id    = module.network.vpc_id
   tags      = local.tags
 }
+
+
+module "asg" {
+  source = "./modules/asg"
+
+  asg_name           = "lab4-asg"
+  ami_id             = var.ami
+  instance_type      = "t3.medium"
+  min_size           = 2
+  desired_capacity   = 2
+  max_size           = 4
+  vpc_id             = module.network.vpc_id
+  subnet_ids         = module.network.private_subnet_ids
+  security_group_ids = [module.security.ec2_sg_id]
+  alb_listener_arn   = module.alb_external.https_listener_arn
+
+  tags = local.tags
+}
+
+module "secrets" {
+  source = "./modules/secrets"
+  tags = local.tags
+}
+

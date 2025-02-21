@@ -5,6 +5,12 @@
 # puedan ser referenciados en otros módulos.
 # ============================================================
 
+# ID del Security Group para EC2 Instance
+output "ec2_sg_id" {
+  description = "ID del Security Group para EC2 Instance"
+  value       = aws_security_group.ec2_sg.id
+}
+
 # ID del Security Group para RDS PostgreSQL
 output "rds_sg_id" {
   description = "ID del Security Group para RDS"
@@ -18,10 +24,10 @@ output "redis_sg_id" {
 }
 
 
-# ID del Security Group para los Microservicios en ECS
-output "ecs_sg_id" {
-  description = "ID del Security Group para ECS"
-  value       = aws_security_group.ecs_sg.id
+# ID del Security Group para los Microservicios en ECS Drupal
+output "ecs_drupal_sg_id" {
+  description = "ID del Security Group para ECS Drupal"
+  value       = aws_security_group.ecs_drupal_sg.id
 }
 
 # ID del Security Group para los Microservicios en ECS Memcached

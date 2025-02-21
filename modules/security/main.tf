@@ -43,14 +43,25 @@ resource "aws_security_group" "redis_sg" {
   })
 }
 
-# Security Group para los Microservicios en ECS
-resource "aws_security_group" "ecs_sg" {
-  name        = "lab4-ecs-sg"
-  description = "Security Group para los Microservicios en ECS"
+# Security Group para EC2
+resource "aws_security_group" "ec2_sg" {
+  name        = "lab4-ec2-sg"
+  description = "Security Group para EC2 Instances"
   vpc_id      = var.vpc_id
 
   tags = merge(var.tags, {
-    Name = "lab4-ecs-sg"
+    Name = "lab4-ec2-sg"
+  })
+}
+
+# Security Group para los Microservicios en ECS Drupal
+resource "aws_security_group" "ecs_drupal_sg" {
+  name        = "lab4-ecs-drupal-sg"
+  description = "Security Group para los Microservicios en ECS Drupal"
+  vpc_id      = var.vpc_id
+
+  tags = merge(var.tags, {
+    Name = "lab4-ecs-drupal-sg"
   })
 }
 
