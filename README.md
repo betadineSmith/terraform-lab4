@@ -1,8 +1,13 @@
 # Terraform AWS Lab 4
 
+Acesso a través de ROL
+**arn:aws:iam::412381763957:role/ReadOnlyAccessForEsteveAlquezar**
+
 ## Configuración Inicial
 
 Este proyecto usa Terraform para desplegar infraestructura en AWS en la región eu-west-3 (París).
+Usa una ami personalizada en dicha región ami-0091da954fd26a2bc (lab4-AMI-Drupal-inicial)
+Y dos certificados validos del dominio jmbmcloud.com en (eu-west-3 (París) - us-east-1 N.Virginia)
 
 Antes de empezar, se han creado manualmente los siguientes recursos en AWS:
 
